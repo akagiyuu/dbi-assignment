@@ -50,7 +50,7 @@ AS
 		IF EXISTS (SELECT 1 FROM Scores WHERE StudentID = @StudentID AND SubjectID = @SubjectID AND ScoreDate = @ScoreDate)
 		BEGIN
 			DELETE Scores
-					WHERE StudentID = @StudentID AND SubjectID = @SubjectID AND ScoreDate = @ScoreDate;
+				WHERE StudentID = @StudentID AND SubjectID = @SubjectID AND ScoreDate = @ScoreDate;
         END
 		ELSE
 		BEGIN 
@@ -65,7 +65,7 @@ CREATE PROCEDURE GetStudentScore
 	@StuID INT
 AS
 	SELECT SubjectID, Score, ScoreDate FROM Scores
-											WHERE StudentID = @StuID
+						WHERE StudentID = @StuID
 
 	EXEC GetStudentScore 1
 
