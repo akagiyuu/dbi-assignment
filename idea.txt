@@ -1,0 +1,20 @@
+Tables
+- Customers
+- Products
+- Categories
+- Providers
+- Orders
+- OrderDetails
+- Employees
+- EmployeeRoles
+- Discounts
+- Shippers
+
+Tables 2 (quan ly TRUONG CAP 3)
+- Students
+    - Parents
+- Teachers
+- Subjects
+- Grades
+- Classes
+- Activities
