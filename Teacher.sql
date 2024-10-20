@@ -145,7 +145,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        PRINT 'Giáo viên đã được gán môn học này rồi.';
+        PRINT 'Teacher has been add';
     END
 END;
 
