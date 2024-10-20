@@ -57,14 +57,8 @@ CREATE TABLE Teachers(
 	Address nvarchar(255) NOT NULL,
 	Gender int REFERENCES Genders(ID) NOT NULL,
 	DOB date NOT NULL CHECK (YEAR(GETDATE()) - YEAR(DOB) >= 22),
-	HiredDate date NOT NULL CHECK (HiredDate < GETDATE())
-);
-
-CREATE TABLE TeacherSubject(
-	TeacherID int NOT NULL REFERENCES Teachers(ID),
-	SubjectID int NOT NULL REFERENCES Subjects(ID),
-	
-	PRIMARY KEY (TeacherID, SubjectID)
+	HiredDate date NOT NULL CHECK (HiredDate < GETDATE()),
+    SubjectID int NOT NULL REFERENCES Subjects(ID)
 );
 
 CREATE TABLE TeacherClass(
