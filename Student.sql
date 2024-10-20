@@ -6,11 +6,12 @@ CREATE PROCEDURE AddStudent
     @Email nvarchar(128),
     @Address nvarchar(255),
     @Gender int,
-    @DOB date
+    @DOB date,
+    @classId int
 AS
 BEGIN
-    INSERT INTO Students (FirstName, LastName, Phone, Email, Address, Gender, DOB)
-    VALUES (@FirstName, @LastName, @Phone, @Email, @Address, @Gender, @DOB);
+    INSERT INTO Students (FirstName, LastName, Phone, Email, Address, Gender, DOB, ClassID)
+    VALUES (@FirstName, @LastName, @Phone, @Email, @Address, @Gender, @DOB, @classId);
 END;
 
 --Update student
@@ -22,7 +23,8 @@ CREATE PROCEDURE UpdateStudent
     @Email nvarchar(128),
     @Address nvarchar(255),
     @Gender int,
-    @DOB date
+    @DOB date,
+    @classId int
 AS
 BEGIN
     UPDATE Students
@@ -32,7 +34,8 @@ BEGIN
         Email = @Email,
         Address = @Address,
         Gender = @Gender,
-        DOB = @DOB
+        DOB = @DOB,
+        ClassID = @classId
     WHERE ID = @ID;
 END;
 
@@ -79,7 +82,7 @@ CREATE PROCEDURE GetStudentsByClass
     @ClassID int
 AS
 BEGIN
-    SELECT S.ID, S.FirstName, S.LastName, S.Phone, S.Email, S.Address, S.DOB
+    SELECT S.ID, S.FirstName, S.LastName, S.Phone, S.Email, S.Address, S.DOB, S.ClassID
     FROM Students S
     INNER JOIN StudentClass SC ON S.ID = SC.StudentID
     WHERE SC.ClassID = @ClassID;
