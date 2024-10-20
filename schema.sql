@@ -1,3 +1,8 @@
+CREATE TABLE Classes(
+	ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	Name nvarchar(32) NOT NULL
+);
+
 CREATE TABLE Genders(
 	ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	Name nvarchar(32) NOT NULL,
@@ -11,7 +16,8 @@ CREATE TABLE Students(
 	Email nvarchar(64) NOT NULL,
 	Address nvarchar(128) NOT NULL,
 	Gender int REFERENCES Genders(ID) NOT NULL,
-	DOB date NOT NULL CHECK (YEAR(GETDATE()) - YEAR(DOB) BETWEEN 16 AND 18)
+	DOB date NOT NULL CHECK (YEAR(GETDATE()) - YEAR(DOB) BETWEEN 16 AND 18),
+    ClassID int NOT NULL REFERENCES Classes(ID),
 );
 
 CREATE TABLE Parents(
@@ -35,12 +41,6 @@ CREATE TABLE StudentActivity(
 	ActivityID int NOT NULL REFERENCES Activities(ID),
 
 	PRIMARY KEY (StudentID, ActivityID)
-);
-
-
-CREATE TABLE Classes(
-	ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	Name nvarchar(32) NOT NULL
 );
 
 CREATE TABLE Subjects(
