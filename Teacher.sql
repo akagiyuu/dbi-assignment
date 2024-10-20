@@ -11,7 +11,7 @@ CREATE PROCEDURE AddTeacher
 	@idSub int
 AS
 BEGIN
-    INSERT INTO Teachers (FirstName, LastName, Phone, Email, Address, Gender, DOB, HiredDate, idSub)
+    INSERT INTO Teachers (FirstName, LastName, Phone, Email, Address, Gender, DOB, HiredDate, SubjectID )
     VALUES (@FirstName, @LastName, @Phone, @Email, @Address, @Gender, @DOB, @HiredDate, @idSub);
 END;
 
@@ -38,7 +38,7 @@ BEGIN
         Gender = @Gender,
         DOB = @DOB,
         HiredDate = @HiredDate,
-	IdSub = @idSub
+	SubjectID  = @idSub
     WHERE ID = @ID;
 END;
 
@@ -72,7 +72,7 @@ CREATE PROCEDURE GetTeachersBySubject
     @SubjectID int
 AS
 BEGIN
-    SELECT T.ID, T.FirstName, T.LastName, T.Phone, T.Email, T.Address, T.DOB, T.HiredDate, T.IdSub
+    SELECT T.ID, T.FirstName, T.LastName, T.Phone, T.Email, T.Address, T.DOB, T.HiredDate, T.SubjectID 
     FROM Teachers T
     INNER JOIN TeacherSubject TS ON T.ID = TS.TeacherID
     WHERE TS.SubjectID = @SubjectID;
@@ -83,7 +83,7 @@ CREATE PROCEDURE GetTeachersByClass
     @ClassID int
 AS
 BEGIN
-    SELECT T.ID, T.FirstName, T.LastName, T.Phone, T.Email, T.Address, T.DOB, T.HiredDate, T.IdSub
+    SELECT T.ID, T.FirstName, T.LastName, T.Phone, T.Email, T.Address, T.DOB, T.HiredDate, T.SubjectID 
     FROM Teachers T
     INNER JOIN TeacherClass TC ON T.ID = TC.TeacherID
     WHERE TC.ClassID = @ClassID;
