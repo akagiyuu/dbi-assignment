@@ -3,7 +3,7 @@ CREATE PROCEDURE AddActivity
 	@Description text,
 	@ActivityDate DATE
 AS
-	INSERT Activities VALUES (@Name, @Description, @ActivityDate)
+	INSERT INTO Activities VALUES (@Name, @Description, @ActivityDate)
 
 
 EXEC AddActivity 'Badminton', 'Badminton Competition', '2024-09-23'
