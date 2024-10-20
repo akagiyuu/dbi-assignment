@@ -29,15 +29,18 @@ EXEC DeleteActivity 3
 CREATE PROCEDURE GetActivityByStudent
 	@StuID INT
 AS
-	SELECT * FROM StudentActivity S
+	SELECT A.* FROM StudentActivity S
 	JOIN Activities A ON S.ActivityID = A.ID
 	WHERE StudentID = @StuID
 
 EXEC GetActivityByStudent 1
 --
-CREATE PROCEDURE GetActivitiesByStudents
+CREATE PROCEDURE GetStudentsByActivity
+	@ActivityID INT
 AS
-	SELECT * FROM StudentActivity S
+	SELECT St.* FROM StudentActivity S
+	JOIN Students St on s.StudentID = St.ID
 	JOIN Activities A ON S.ActivityID = A.ID
+	WHERE ActivityID = @ActivityID
 
-EXEC GetActivitiesByStudents
+EXEC GetStudentsByActivity 1 
