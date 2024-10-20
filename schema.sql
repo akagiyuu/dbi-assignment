@@ -8,8 +8,8 @@ CREATE TABLE Students(
 	FirstName nvarchar(64) NOT NULL,
 	LastName nvarchar(64) NOT NULL,
 	Phone char(10) NOT NULL,
-	Email nvarchar(128) NOT NULL,
-	Address nvarchar(255) NOT NULL,
+	Email nvarchar(64) NOT NULL,
+	Address nvarchar(128) NOT NULL,
 	Gender int REFERENCES Genders(ID) NOT NULL,
 	DOB date NOT NULL CHECK (YEAR(GETDATE()) - YEAR(DOB) BETWEEN 16 AND 18)
 );
@@ -25,7 +25,7 @@ CREATE TABLE Parents(
 
 CREATE TABLE Activities(
 	ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	Name text NOT NULL,
+	Name nvarchar(128) NOT NULL,
 	Description text NOT NULL,
 	ActivityDate date NOT NULL,
 );
