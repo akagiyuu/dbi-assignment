@@ -1,9 +1,3 @@
--- Drop the existing procedure if it exists
-IF OBJECT_ID('dbo.AddParent', 'P') IS NOT NULL
-BEGIN
-    DROP PROCEDURE dbo.AddParent;
-END
-
 -- Create the Genders table
 CREATE TABLE Genders (
     ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
