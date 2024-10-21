@@ -157,28 +157,23 @@ CREATE PROCEDURE AddSubject
 	@SubjectID int,
 	@Name nvarchar(32)
 AS 
-BEGIN 
 	INSERT INTO Subjects (Name)
-	VALUES (@Name);
-END;
+	VALUES (@Name)
+GO
  
 CREATE PROCEDURE UpdateSubject 
     @SubjectID int, 
-    @Name nvarchar(32) = NULL
+    @Name nvarchar(32)
 AS
-BEGIN 
     UPDATE Subjects
-    SET 
-        Name = COALESCE(@Name, Name) 
-    WHERE 
-        ID = @SubjectID;  
-END;
+    SET Name = @Name
+    WHERE ID = @SubjectID 
+GO
 
 CREATE PROCEDURE DeleteSubject 
 	@SubjectID int
 AS 
-BEGIN 
 	DELETE FROM Subjects
-	WHERE ID = @SubjectID;
-END;
+	WHERE ID = @SubjectID
+GO
 
