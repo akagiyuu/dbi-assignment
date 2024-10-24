@@ -85,7 +85,6 @@ AS
 BEGIN TRANSACTION;
 	DECLARE @ClassID int = (SELECT ID FROM deleted)
 	UPDATE Students SET ClassID = NULL WHERE ClassID = @ClassID
-	--DELETE TeacherClass WHERE ClassID = @ClassID
 	DELETE Classes WHERE ID = @ClassID
 	IF @@ERROR <>0
 		ROLLBACK TRANSACTION
@@ -307,6 +306,11 @@ CREATE PROCEDURE DeleteStudent
     @ID int
 AS
     DELETE FROM Students WHERE ID = @ID;
+GO
+
+CREATE PROCEDURE GetUnAssignedStudent
+AS
+	SELECT * FROM Students WHERE ClassID IS NULL
 GO
 
 CREATE PROCEDURE AssignStudentToClass
