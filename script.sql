@@ -89,6 +89,7 @@ BEGIN TRANSACTION;
 	IF @@ERROR <>0
 		ROLLBACK TRANSACTION
 COMMIT TRANSACTION;
+GO
 
 -- Genders
 INSERT INTO Genders (Name) VALUES ('Male'), ('Female');
@@ -177,6 +178,12 @@ GO
 -- EXEC AssignTeacherToClass 2,3
 -- SELECT * FROM TeacherClass
 
+CREATE FUNCTION GetClass(@ID int) RETURNS TABLE AS
+RETURN (SELECT * FROM Classes WHERE ID = @ID)
+GO
+
+-- SELECT * FROM GetClass(1)
+
 CREATE PROCEDURE AddTeacher
     @FirstName nvarchar(64),
     @LastName nvarchar(64),
@@ -232,21 +239,21 @@ AS
 	WHERE ID = @TeacherID
 GO
 
-CREATE PROCEDURE GetTeachersBySubject
-    @SubjectID int
-AS
+CREATE FUNCTION GetTeachersBySubject(@SubjectID int) RETURNS TABLE AS
+RETURN (
     SELECT *
     FROM Teachers T
 	WHERE SubjectID = @SubjectID
+)
 GO
 
-CREATE PROCEDURE GetTeachersByClass
-    @ClassID int
-AS
+CREATE FUNCTION GetTeachersByClass(@ClassID int) RETURNS TABLE AS
+RETURN (
     SELECT T.* 
     FROM Teachers T
     INNER JOIN TeacherClass TC ON T.ID = TC.TeacherID
     WHERE TC.ClassID = @ClassID
+)
 GO
 
 --EXEC AddTeacher 'C', 'Johnson', '3456789018', 'c.j@example.com', '789 Pine St', 2, '1990-07-15', '2015-09-01', 1
@@ -261,9 +268,9 @@ GO
 --EXEC AssignSubjectToTeacher 2, 1
 --SELECT * FROM Teachers
 
---EXEC GetTeachersBySubject 1
+--SELECT * FROM GetTeachersBySubject(1)
 
---EXEC GetTeachersByClass 1
+--SELECT * FROM GetTeachersByClass(1)
 
 CREATE PROCEDURE AddStudent
     @FirstName nvarchar(64),
@@ -308,9 +315,8 @@ AS
     DELETE FROM Students WHERE ID = @ID;
 GO
 
-CREATE PROCEDURE GetUnAssignedStudent
-AS
-	SELECT * FROM Students WHERE ClassID IS NULL
+CREATE FUNCTION GetUnAssignedStudent() RETURNS TABLE AS
+RETURN (SELECT * FROM Students WHERE ClassID IS NULL)
 GO
 
 CREATE PROCEDURE AssignStudentToClass
@@ -322,12 +328,12 @@ AS
 	WHERE ID = @StudentID
 GO
 
-CREATE PROCEDURE GetStudentsByClass
-    @ClassID int
-AS
+CREATE FUNCTION GetStudentsByClass(@ClassID int) RETURNS TABLE AS
+RETURN (
     SELECT *
     FROM Students 
     WHERE ClassID = @ClassID
+)
 GO
 
 --EXEC AddStudent 'John', 'Doe', '1234567889', 'john2@example.com', '123 Main St', 1, '2006-05-12', 1
@@ -343,7 +349,7 @@ GO
 --EXEC AssignStudentToClass 2, 2
 --SELECT * FROM Students
 
---EXEC GetStudentsByClass 1
+--SELECT * FROM GetStudentsByClass(1)
 
 CREATE PROCEDURE AddParent
     @FirstName nvarchar(64),
@@ -379,12 +385,12 @@ AS
     WHERE ID = @ParentID;
 GO
 
-CREATE PROCEDURE ViewParentByStudent
-    @StudentID int
-AS
+CREATE FUNCTION GetParentByStudent(@StudentID int) RETURNS TABLE AS
+RETURN (
     SELECT *
     FROM Parents
-    WHERE StudentID = @StudentID;
+    WHERE StudentID = @StudentID
+)
 GO
 
 --EXEC AddParent 'Test', 'Test', '1245678945', 'test@example.com', 1
@@ -394,7 +400,7 @@ GO
 --EXEC ViewParentByStudent 1
 
 --EXEC DeleteParent 3
---EXEC ViewParentByStudent 1
+--SELECT * FROM GetParentByStudent(1)
 
 CREATE PROCEDURE AddSubject
 	@Name nvarchar(32)
@@ -417,6 +423,10 @@ CREATE PROCEDURE DeleteSubject
 AS 
 	DELETE FROM Subjects
 	WHERE ID = @SubjectID
+GO
+
+CREATE FUNCTION GetSubject(@ID int) RETURNS TABLE AS
+RETURN (SELECT * FROM Subjects WHERE ID = @ID)
 GO
 
 --EXEC AddSubject 'Biology'
@@ -460,37 +470,35 @@ AS
 GO
 
 
-CREATE PROCEDURE GetStudentScore
-	@StudentID INT
-AS
+CREATE FUNCTION GetStudentScore(@StudentID INT) RETURNS TABLE AS
+RETURN (
 	SELECT SubjectID, Score, ScoreDate FROM Scores
 	WHERE StudentID = @StudentID
+)
 GO
 
-CREATE PROCEDURE GetScoreByClass
-	@ClassID INT
-AS
+CREATE FUNCTION GetScoreByClass(@ClassID INT) RETURNS TABLE AS
+RETURN (
 	SELECT S.*
 	FROM Scores S
 	INNER JOIN Students ON Students.ID = S.StudentID
 	WHERE ClassID = @ClassID
+)
 GO
 
-	--
-CREATE PROCEDURE GetScoreBySubject
-	@SubjectID INT
-AS
+CREATE FUNCTION GetScoreBySubject(@SubjectID INT) RETURNS TABLE AS
+RETURN (
 	SELECT S.* FROM Scores S 
 	JOIN Subjects Sj ON S.SubjectID = SJ.ID
 	WHERE SJ.ID = @SubjectID
+)
 GO
 
-CREATE PROCEDURE GetScoreByDateRange
-	@StartDate DATE,
-	@EndDate DATE
-AS
+CREATE FUNCTION GetScoreByDateRange(@StartDate DATE, @EndDate DATE) RETURNS TABLE AS
+RETURN (
 	SELECT * FROM Scores 
 	WHERE ScoreDate BETWEEN @StartDate AND @EndDate
+)
 GO
 
 --EXEC RecordScore 2, 1, 10, '2024-09-25'
@@ -502,11 +510,11 @@ GO
 --EXEC DeleteScore 2, 1, '2024-09-25'
 --EXEC GetStudentScore 2
 
---EXEC GetScoreByClass 2
+--SELECT * FROM GetScoreByClass(2)
 
---EXEC GetScoreBySubject 2
+--SELECT * FROM GetScoreBySubject(2)
 
---EXEC GetScoreByDateRange '2024-09-01', '2024-09-30'
+--SELECT * FROM GetScoreByDateRange('2024-09-01', '2024-09-30')
 
 CREATE PROCEDURE AddActivity
 	@Name text,
@@ -533,21 +541,21 @@ AS
 	DELETE Activities WHERE ID = @ActivityID
 GO
 
-CREATE PROCEDURE GetActivityByStudent
-	@StudentID INT
-AS
+CREATE FUNCTION GetActivityByStudent(@StudentID INT) RETURNS TABLE AS
+RETURN (
 	SELECT A.* FROM StudentActivity S
 	JOIN Activities A ON S.ActivityID = A.ID
 	WHERE StudentID = @StudentID
+)
 GO
 
-CREATE PROCEDURE GetStudentsByActivity
-	@ActivityID INT
-AS
+CREATE FUNCTION GetStudentsByActivity(@ActivityID INT) RETURNS TABLE AS
+RETURN (
 	SELECT St.* FROM StudentActivity S
 	JOIN Students St on s.StudentID = St.ID
 	JOIN Activities A ON S.ActivityID = A.ID
 	WHERE ActivityID = @ActivityID
+)
 GO
 
 --EXEC AddActivity 'Badminton', 'Badminton Competition', '2024-09-23'
@@ -559,6 +567,6 @@ GO
 --EXEC DeleteActivity 3
 --SELECT * FROM Activities
 
---EXEC GetActivityByStudent 1
+--SELECT * FROM GetActivityByStudent(1)
 
---EXEC GetStudentsByActivity 1
+--SELECT * FROM GetStudentsByActivity(1)
