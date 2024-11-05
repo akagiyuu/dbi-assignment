@@ -21,12 +21,13 @@ CREATE TABLE Students(
 );
 
 CREATE TABLE Parents(
-	ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	ID int NOT NULL,
 	FirstName nvarchar(64) NOT NULL,
 	LastName nvarchar(64) NOT NULL,
 	Phone char(10) NOT NULL,
 	Email nvarchar(128) NOT NULL,
-	StudentID int NOT NULL REFERENCES Students(ID) ON DELETE CASCADE
+	StudentID int NOT NULL REFERENCES Students(ID) ON DELETE CASCADE,
+	PRIMARY KEY(ID, StudentID)
 );
 
 CREATE TABLE Activities(
@@ -100,9 +101,9 @@ VALUES ('John', 'Doe', '1234567890', 'john@example.com', '123 Main St', 1, '2006
        ('Jane', 'Smith', '0987654321', 'jane@example.com', '456 Oak St', 2, '2007-08-25');
 
 -- Parents
-INSERT INTO Parents (FirstName, LastName, Phone, Email, StudentID)
-VALUES ('Michael', 'Doe', '2345678901', 'michael@example.com', 1),
-       ('Susan', 'Smith', '8765432109', 'susan@example.com', 2);
+INSERT INTO Parents (ID, FirstName, LastName, Phone, Email, StudentID)
+VALUES (1, 'Michael', 'Doe', '2345678901', 'michael@example.com', 1),
+       (1, 'Susan', 'Smith', '8765432109', 'susan@example.com', 2);
 
 -- Activities
 INSERT INTO Activities (Name, Description, ActivityDate)
@@ -352,18 +353,20 @@ GO
 --SELECT * FROM GetStudentsByClass(1)
 
 CREATE PROCEDURE AddParent
+	@ID int,
     @FirstName nvarchar(64),
     @LastName nvarchar(64),
     @Phone char(10),
     @Email nvarchar(128),
     @StudentID int
 AS
-    INSERT INTO Parents (FirstName, LastName, Phone, Email, StudentID)
-    VALUES (@FirstName, @LastName, @Phone, @Email, @StudentID)
+    INSERT INTO Parents (ID, FirstName, LastName, Phone, Email, StudentID)
+    VALUES (@ID, @FirstName, @LastName, @Phone, @Email, @StudentID)
 GO
 
 CREATE PROCEDURE UpdateParent
     @ParentID int,
+	@StudentID int,
     @FirstName nvarchar(64) = NULL,
     @LastName nvarchar(64) = NULL,
     @Phone char(10) = NULL,
@@ -375,14 +378,15 @@ AS
         LastName = COALESCE(@LastName, LastName),
         Phone = COALESCE(@Phone, Phone),
         Email = COALESCE(@Email, Email)
-    WHERE ID = @ParentID;
+    WHERE ID = @ParentID AND StudentID = @StudentID;
 GO
 
 CREATE PROCEDURE DeleteParent
-    @ParentID int
+    @ParentID int,
+	@StudentID int
 AS
     DELETE FROM Parents
-    WHERE ID = @ParentID;
+    WHERE ID = @ParentID AND StudentID = @StudentID;
 GO
 
 CREATE FUNCTION GetParentByStudent(@StudentID int) RETURNS TABLE AS
